@@ -4,6 +4,11 @@ inputField = form.querySelector(".input-field"),
 sendBtn = form.querySelector("button"),
 chatBox = document.querySelector(".chat-box");
 
+
+const sendButton = document.querySelector("#send-button");
+const icon = document.querySelector("#icon");
+
+
 form.onsubmit = (e)=>{
     e.preventDefault();
 }
@@ -60,4 +65,97 @@ setInterval(() =>{
 function scrollToBottom(){
     chatBox.scrollTop = chatBox.scrollHeight;
   }
+
+
+
+
+
+  // Cargar mensajes del grupo
+  setInterval(() => {
+      fetch(`php/get-chat.php?group_id=${groupId}`)
+          .then(response => response.json())
+          .then(data => {
+              const chatMessages = document.getElementById("chatMessages");
+              chatMessages.innerHTML = '';  // Limpiar el área de mensajes
+              data.messages.forEach(message => {
+                  const messageDiv = document.createElement("div");
+                  messageDiv.textContent = `${message.username}: ${message.msg}`;
+                  chatMessages.appendChild(messageDiv);
+              });
+          });
+  }, 2000);
   
+  // Enviar mensaje
+  document.getElementById("sendMessageForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+  
+      const message = document.getElementById("message").value;
+  
+      fetch("php/send-message.php", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ groupId, message })
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              document.getElementById("message").value = '';  // Limpiar el campo de texto
+          }
+      });
+  });
+  // Función para abrir el modal
+document.getElementById('createGroupBtn').addEventListener('click', function() {
+    console.log("Botón presionado"); // Verifica si el evento se está activando
+    document.getElementById('createGroupModal').style.display = 'flex';
+ });
+ 
+  
+ // Redirección a PayPal al hacer clic en el botón de tres rayas
+const hamburgerMenu = document.getElementById("hamburger-menu");
+
+hamburgerMenu.addEventListener("click", () => {
+  window.location.href = "https://www.paypal.com";
+});
+
+
+
+
+
+let isRecording = false;
+
+// Cambiar ícono según el contenido del input
+inputField.addEventListener("input", () => {
+  if (inputField.value.trim() !== "") {
+    icon.classList.remove("fa-microphone");
+    icon.classList.add("fa-paper-plane");
+  } else {
+    icon.classList.remove("fa-paper-plane");
+    icon.classList.add("fa-microphone");
+  }
+});
+
+// Evento de clic en el botón
+sendButton.addEventListener("click", () => {
+  if (icon.classList.contains("fa-paper-plane")) {
+    // Enviar mensaje de texto
+    console.log("Mensaje enviado:", inputField.value);
+    inputField.value = ""; // Limpiar el campo de entrada
+    icon.classList.remove("fa-paper-plane");
+    icon.classList.add("fa-microphone");
+  } else if (icon.classList.contains("fa-microphone")) {
+    // Grabar audio
+    if (!isRecording) {
+      console.log("Grabación iniciada...");
+      isRecording = true;
+      icon.classList.add("recording");
+    } else {
+      console.log("Grabación detenida y enviada.");
+      isRecording = false;
+      icon.classList.remove("recording");
+    }
+  }
+});
+
+

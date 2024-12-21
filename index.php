@@ -40,7 +40,7 @@ if (isset($_SESSION['unique_id'])) {
           <input type="submit" name="submit" value="Ingresar">
         </div>
       </form>
-      <div class="link">Ya te has registrado? <a href="login.php">Ingresar</a></div>
+      <div class="link"> <a href="login.php">Ingresar</a></div>
     </section>
   </div>
 
@@ -48,5 +48,4 @@ if (isset($_SESSION['unique_id'])) {
   <script src="javascript/signup.js"></script>
 
 </body>
-
 </html>

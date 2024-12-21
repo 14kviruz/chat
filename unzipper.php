@@ -417,3 +417,24 @@ class Zipper
 </body>
 
 </html>
+
+
+
+
+// Simulación de actualización en la base de datos (AJAX)
+function updateUserToPremium(userId) {
+    fetch('/update-premium-status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: userId, isPremium: true })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message); // Muestra el mensaje de éxito
+    })
+    .catch(error => {
+        console.error('Error al actualizar el estado premium:', error);
+    });
+}
